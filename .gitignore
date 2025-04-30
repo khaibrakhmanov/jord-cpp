@@ -398,3 +398,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+cb_project/jord++.depend
+cb_project/jord++.layout
