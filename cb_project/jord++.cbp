@@ -41,6 +41,42 @@
 					<Add option="-m64" />
 				</Linker>
 			</Target>
+			<Target title="Debug-Steady">
+				<Option output="bin/Debug/jord++" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug/" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-DSTEADY_DRIFT" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add option="-static" />
+					<Add option="-pg" />
+					<Add library="C:/msys64/mingw64/lib/libgmon.a" />
+				</Linker>
+			</Target>
+			<Target title="Release-Steady">
+				<Option output="bin/Release/jord++" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-std=gnu++20" />
+					<Add option="-m64" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static" />
+					<Add option="-m64" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
