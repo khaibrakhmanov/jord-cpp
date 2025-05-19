@@ -1,0 +1,85 @@
+# Папки
+SRC_DIR   := ../jord_code
+LIB_DIR   := $(SRC_DIR)/lib
+OBJ_DIR   := ./obj
+BIN_DIR   := ./bin
+
+# Инклуды для заголовков
+INCLUDES  := -I$(SRC_DIR) \
+             -I$(LIB_DIR)/coding \
+             -I$(LIB_DIR)/cosmos \
+             -I$(LIB_DIR)/numeric \
+             -I$(LIB_DIR)/physics
+
+# Список .cpp
+SRCS_ROOT    := $(wildcard $(SRC_DIR)/*.cpp)
+SRCS_CODING  := $(wildcard $(LIB_DIR)/coding/*.cpp)
+SRCS_NUMERIC := $(wildcard $(LIB_DIR)/numeric/*.cpp)
+SRCS         := $(SRCS_ROOT) $(SRCS_CODING) $(SRCS_NUMERIC)
+
+# Соответствующие .o в obj/
+OBJS_ROOT    := $(patsubst $(SRC_DIR)/%.cpp,        $(OBJ_DIR)/%.o,         $(SRCS_ROOT))
+OBJS_CODING  := $(patsubst $(LIB_DIR)/coding/%.cpp,  $(OBJ_DIR)/coding_%.o,  $(SRCS_CODING))
+OBJS_NUMERIC := $(patsubst $(LIB_DIR)/numeric/%.cpp, $(OBJ_DIR)/numeric_%.o, $(SRCS_NUMERIC))
+OBJS         := $(OBJS_ROOT) $(OBJS_CODING) $(OBJS_NUMERIC)
+
+# Компилятор
+CXX      := g++
+STD      := -std=c++20
+
+# Флаги по конфигурациям
+RELEASE_FLAGS := -Wall -O3 $(STD) -m64 -s -static $(INCLUDES)
+DEBUG_FLAGS   := -Wall -Wextra -g $(STD) -static -DDEBUG $(INCLUDES)
+STEADY_FLAG   := -DSTEADY_DRIFT
+
+# Имена бинарников
+EXEC_RELEASE        := $(BIN_DIR)/jord_release
+EXEC_DEBUG          := $(BIN_DIR)/jord_debug
+EXEC_RELEASE_STEADY := $(BIN_DIR)/jord_release_steady
+EXEC_DEBUG_STEADY   := $(BIN_DIR)/jord_debug_steady
+
+.PHONY: release debug release_steady debug_steady clean dirs
+
+# Создание папок obj/ и bin/
+dirs:
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+
+# Правила компиляции
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | dirs
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/coding_%.o: $(LIB_DIR)/coding/%.cpp | dirs
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/numeric_%.o: $(LIB_DIR)/numeric/%.cpp | dirs
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Сборочные цели
+release:   CXXFLAGS := $(RELEASE_FLAGS)
+release:   $(EXEC_RELEASE)
+
+debug:     CXXFLAGS := $(DEBUG_FLAGS)
+debug:     $(EXEC_DEBUG)
+
+release_steady: CXXFLAGS := $(RELEASE_FLAGS) $(STEADY_FLAG)
+release_steady: $(EXEC_RELEASE_STEADY)
+
+debug_steady:   CXXFLAGS := $(DEBUG_FLAGS) $(STEADY_FLAG)
+debug_steady:   $(EXEC_DEBUG_STEADY)
+
+# Правила линковки
+$(EXEC_RELEASE):        $(OBJS) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(EXEC_DEBUG):          $(OBJS) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(EXEC_RELEASE_STEADY): $(OBJS) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(EXEC_DEBUG_STEADY):   $(OBJS) | dirs
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+# Удаление
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR)

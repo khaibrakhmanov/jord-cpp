@@ -1,0 +1,59 @@
+# Папки
+SRC_DIR   = ../jord_code
+LIB_DIR   = $(SRC_DIR)/lib
+OBJ_DIR   = obj
+BIN_DIR   = bin
+
+# Инклуды
+INCLUDES  = -I$(SRC_DIR) ^
+            -I$(LIB_DIR)/coding ^
+            -I$(LIB_DIR)/cosmos ^
+            -I$(LIB_DIR)/numeric ^
+            -I$(LIB_DIR)/physics
+
+# .cpp и .o
+SRCS_ROOT    = $(wildcard $(SRC_DIR)/*.cpp)
+SRCS_CODING  = $(wildcard $(LIB_DIR)/coding/*.cpp)
+SRCS_NUMERIC = $(wildcard $(LIB_DIR)/numeric/*.cpp)
+SRCS         = $(SRCS_ROOT) $(SRCS_CODING) $(SRCS_NUMERIC)
+
+OBJS_ROOT    = $(patsubst $(SRC_DIR)/%.cpp,        $(OBJ_DIR)/%.o,         $(SRCS_ROOT))
+OBJS_CODING  = $(patsubst $(LIB_DIR)/coding/%.cpp,  $(OBJ_DIR)/coding_%.o,  $(SRCS_CODING))
+OBJS_NUMERIC = $(patsubst $(LIB_DIR)/numeric/%.cpp, $(OBJ_DIR)/numeric_%.o, $(SRCS_NUMERIC))
+OBJS         = $(OBJS_ROOT) $(OBJS_CODING) $(OBJS_NUMERIC)
+
+CXX      = g++
+STD      = -std=c++20
+
+RELEASE_FLAGS = -Wall -O3 $(STD) -m64 -s -static $(INCLUDES)
+DEBUG_FLAGS   = -Wall -Wextra -g $(STD) -static -DDEBUG $(INCLUDES)
+STEADY_FLAG   = -DSTEADY_DRIFT
+
+EXEC_RELEASE        = $(BIN_DIR)\\jord_release.exe
+EXEC_DEBUG          = $(BIN_DIR)\\jord_debug.exe
+EXEC_RELEASE_STEADY = $(BIN_DIR)\\jord_release_steady.exe
+EXEC_DEBUG_STEADY   = $(BIN_DIR)\\jord_debug_steady.exe
+
+.PHONY: release debug release_steady debug_steady clean create_dirs
+
+# Создание папок
+create_dirs:
+	if not exist $(OBJ_DIR) mkdir $(OBJ_DIR)
+	if not exist $(BIN_DIR) mkdir $(BIN_DIR)
+
+# Сборка
+release: create_dirs
+	$(CXX) $(RELEASE_FLAGS) $(SRCS) -o $(EXEC_RELEASE)
+
+debug: create_dirs
+	$(CXX) $(DEBUG_FLAGS) $(SRCS) -o $(EXEC_DEBUG)
+
+release_steady: create_dirs
+	$(CXX) $(RELEASE_FLAGS) $(STEADY_FLAG) $(SRCS) -o $(EXEC_RELEASE_STEADY)
+
+debug_steady: create_dirs
+	$(CXX) $(DEBUG_FLAGS) $(STEADY_FLAG) $(SRCS) -o $(EXEC_DEBUG_STEADY)
+
+clean:
+	rmdir /s /q $(OBJ_DIR)
+	rmdir /s /q $(BIN_DIR)
