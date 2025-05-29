@@ -25,11 +25,11 @@ OBJS         := $(OBJS_ROOT) $(OBJS_CODING) $(OBJS_NUMERIC)
 
 # Компилятор
 CXX      := g++
-STD      := -std=c++20
+STD      := 
 
 # Флаги по конфигурациям
-RELEASE_FLAGS := -Wall -O3 $(STD) -m64 -s -static $(INCLUDES)
-DEBUG_FLAGS   := -Wall -Wextra -g $(STD) -static -DDEBUG $(INCLUDES)
+RELEASE_FLAGS := -Wall -O3 $(STD) -m64 -s $(INCLUDES)
+DEBUG_FLAGS   := -Wall -Wextra -g $(STD) -DDEBUG $(INCLUDES)
 STEADY_FLAG   := -DSTEADY_DRIFT
 
 # Имена бинарников
