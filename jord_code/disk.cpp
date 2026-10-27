@@ -36,6 +36,7 @@ namespace disk
     double C_rho = 1.0;
     double C_vth = 1.0;
     double C_T = 1.0;
+    double sigma_H = 1.0;
     // ------------------------------------------------------------
 }
 
@@ -65,6 +66,7 @@ void disk::Prepare()
     C_rho = 2.5e-10 * pow(disk::m, 0.4375) * pow(disk::alpha / 0.01, -0.625) * pow(disk::m_dot, 0.25);
     C_vth = sqrt(8 * k / (M_PI * mu * m_p));
     C_T = 240 * pow(disk::m, 0.375) * pow(disk::alpha / 0.01, -0.25) * sqrt(disk::m_dot);
+    sigma_H = M_PI * pow(5.29e-9, 2);
 }
 
 void disk::SetSubkeplerDegree(const double arg)
@@ -100,4 +102,22 @@ double T(const double r_au)
 double disk::V_th(const double r_au)
 {
     return C_vth * sqrt(T(r_au));
+}
+
+double disk::lambda(const double r_au)
+{
+    double n = disk::Rho(r_au) / (mu_ISM * m_p);
+    
+    if (disk::sigma_H * n < 1e-300)
+    {
+        return INFINITY;
+    }
+    else if (disk::sigma_H * n == 0)
+    {
+        return INFINITY;
+    }
+    else
+    {
+        return 1.0 / (disk::sigma_H * n);
+    }
 }

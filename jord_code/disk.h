@@ -51,6 +51,11 @@ namespace disk
     /// @param r_au - radial distance from the star, au
     /// @return v_th [cm/s]
     double V_th(const double r_au);
+
+    /// @brief Mean free path of gas molecules
+    /// @param r_au - radial distance from the star, au
+    /// @return lambda [cm/s]
+    double lambda(const double r_au);
 }
 
 #endif // DISK_H_INCLUDED

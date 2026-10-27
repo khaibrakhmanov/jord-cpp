@@ -110,7 +110,13 @@ double phys_model::equations::Djdt(const double r_au, const double vr, const dou
 
 double phys_model::coefficients::StoppingTime(const double r_au, const double a_cm)
 {
-    // the solution for the case of Epstein drag
-
-    return grain::GetRho() * a_cm / (disk::Rho(r_au) * disk::V_th(r_au));
+         // the solution for the case of Epstein drag
+    if ((a_cm / scales::Get("a")) < 1.5 * disk::lambda(r_au))
+    {
+        return grain::GetRho() * a_cm / (disk::Rho(r_au) * disk::V_th(r_au)); 
+    }
+    else // the solution for the case of Stokes drag
+    {
+        return 2 * grain::GetRho() * pow(a_cm, 2) / (3 * disk::Rho(r_au) * disk::V_th(r_au) * disk::lambda(r_au)); 
+    }
 }

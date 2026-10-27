@@ -3,7 +3,7 @@
 
 #include <string>
 
-//#define COAGULATION
+#define COAGULATION
 //#define STEADY_DRIFT
 
 /// @brief Namespace - interface to the physical model (equations, coefficients, scales, etc.)
